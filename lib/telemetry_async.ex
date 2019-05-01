@@ -1,0 +1,2 @@
+defmodule TelemetryAsync do
+end
