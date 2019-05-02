@@ -15,6 +15,7 @@ defmodule TelemetryAsync.ShardTest do
 
     assert capture_log(fn ->
              Shard.execute(pid, fn -> Logger.info("was here") end)
+             Process.sleep(25)
            end) =~ "was here"
   end
 
