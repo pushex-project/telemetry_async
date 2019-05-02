@@ -26,7 +26,7 @@ defmodule TelemetryAsync.MixProject do
         "Steve Bussey"
       ],
       licenses: ["MIT"],
-      links: %{github: "https://github.com/sb8244/telemetry_async"},
+      links: %{github: "https://github.com/pushex-project/telemetry_async"},
       files: ~w(lib) ++ ~w(mix.exs README.md)
     ]
   end
