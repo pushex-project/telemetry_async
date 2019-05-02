@@ -14,3 +14,7 @@ matrix:
 script:
   - mix format --check-formatted
   - mix test
+
+branches:
+  only:
+    - master
