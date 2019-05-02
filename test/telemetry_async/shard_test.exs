@@ -1,5 +1,5 @@
 defmodule TelemetryAsync.ShardTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   require Logger
   import ExUnit.CaptureLog
 
@@ -15,7 +15,6 @@ defmodule TelemetryAsync.ShardTest do
 
     assert capture_log(fn ->
              Shard.execute(pid, fn -> Logger.info("was here") end)
-             Process.sleep(100)
            end) =~ "was here"
   end
 
