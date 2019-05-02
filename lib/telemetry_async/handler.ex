@@ -56,7 +56,13 @@ defmodule TelemetryAsync.Handler do
   defp attach_metrics(metrics, pool_size, prefix) do
     Enum.map(metrics, fn metric ->
       name = [__MODULE__ | [prefix | metric]] |> Module.concat()
-      :ok = :telemetry.attach(name, metric, &__MODULE__.handler/4, %{pool_size: pool_size, prefix: prefix})
+
+      :ok =
+        :telemetry.attach(name, metric, &__MODULE__.handler/4, %{
+          pool_size: pool_size,
+          prefix: prefix
+        })
+
       name
     end)
   end

@@ -10,7 +10,7 @@ defmodule ReadmeTest do
 
     assert Version.match?(
              app_version,
-           readme_versions
+             readme_versions
            ),
            """
            Install version constraint in README.md does not match to current app version.
