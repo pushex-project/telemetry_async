@@ -3,6 +3,7 @@
 [![Hex.pm](https://img.shields.io/hexpm/v/telemetry_async.svg)](https://hex.pm/packages/telemetry_async)
 [![Hex.pm](https://img.shields.io/hexpm/dt/telemetry_async.svg)](https://hex.pm/packages/telemetry_async)
 [![Hex.pm](https://img.shields.io/hexpm/l/telemetry_async.svg)](https://github.com/pushex-project/telemetry_async/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/pushex-project/telemetry_async.svg?branch=master)](https://travis-ci.org/pushex-project/telemetry_async)
 
 This library provides async execution of [telemetry](https://github.com/beam-telemetry/telemetry) events so that the
 caller site is not blocked while your metrics are processed. This can be desirable if you have metrics that are in
