@@ -62,3 +62,43 @@ You can customize the `ShardSupervisor` and `Handler` by specifying the size of 
 is useful if you want to have multiple Supervisors in your application. This is documented in the hexdocs.
 
 The `Handler` will unsubscribe from all subscribed metrics when it terminates.
+
+## Performance
+
+The default `:telemetry` execution will run in the process of the caller. This means that no binaries are
+copied. `TelemetryAsync`, however, will copy binaries (potentially large maps) due to crossing a process boundary.
+Using synchronous handlers is probably useful for many people and you should go asynchronous only if you are
+okay with the memory implications of it. In theory it will allow for higher throughput to your main processes (business requests)
+and offload metrics to be async.
+
+A way to help alleviate binary copying is provided. You are able to set `transform_fn` option on the `Handler` process.
+This option will run the provided function for *every* execution it receives, before it crosses the process boundary.
+You can return a tuple containing the new measurements and metadata like `{measurements, metadata}` and these will be
+provided to `:telemetry.execute`. You must always provide a match, so the follow pattern is encouraged:
+
+```elixir
+defmodule TestTransform do
+  def transform(
+    [:metric_i_want_to_transform],
+    measurements,
+    %{some_metadata: %{nested: meta}}
+  ) do
+    {
+      Map.take(measurements, [:key_i_care_about]),
+      %{nested: meta}
+    }
+  end
+
+  def transform([:removes, :everything], _a, _b) do
+    {%{}, %{}}
+  end
+
+  def transform(_, a, b) do
+    {a, b}
+  end
+end
+```
+
+This will allow you to utilize pattern matching on the metric names you care about (without `:async` added). You
+can modify the payload or completely remove it by setting it to empty maps. A default case should be provided to
+be an identity function.
