@@ -24,7 +24,7 @@ This package can be installed by adding `telemetry_async` to your list of depend
 ```elixir
 def deps do
   [
-    {:telemetry_async, "~> 0.0.1"}
+    {:telemetry_async, "~> 0.0.3"}
   ]
 end
 ```
