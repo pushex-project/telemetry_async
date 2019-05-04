@@ -42,7 +42,7 @@ defmodule TelemetryAsync.HandlerTest do
                  assert b == %{a: 1}
                  assert c == %{b: 2}
                  assert d == nil
-                 Logger.info(test)
+                 Logger.info("ok")
                end,
                nil
              ) == :ok
@@ -50,7 +50,7 @@ defmodule TelemetryAsync.HandlerTest do
       assert capture_log(fn ->
                assert :telemetry.execute(metric, %{a: 1}, %{b: 2}) == :ok
                Process.sleep(50)
-             end) =~ to_string(test)
+             end) =~ "ok"
     end
 
     test "the metric is not dispatched if there is no shard supervisor", %{test: test} do
@@ -94,6 +94,41 @@ defmodule TelemetryAsync.HandlerTest do
              end) == ""
 
       assert :telemetry.list_handlers(metric) |> length() == 0
+    end
+
+    test "a transformation function can be provided", %{test: test} do
+      metric = [HandlerTest_6]
+      assert {:ok, _sup_pid} = ShardSupervisor.start_link(prefix: test)
+
+      assert {:ok, _pid} =
+               Handler.start_link(
+                 metrics: [metric],
+                 prefix: test,
+                 transform_fn: fn a, b, c ->
+                   assert a == metric
+                   assert b == %{a: 1, extra: true}
+                   assert c == %{b: 2, extra: true}
+                   {%{a: 1}, %{b: 2}}
+                 end
+               )
+
+      assert :telemetry.attach(
+               test,
+               [:async | metric],
+               fn a, b, c, d ->
+                 assert a == [:async | metric]
+                 assert b == %{a: 1}
+                 assert c == %{b: 2}
+                 assert d == nil
+                 Logger.info("ok")
+               end,
+               nil
+             ) == :ok
+
+      assert capture_log(fn ->
+               assert :telemetry.execute(metric, %{a: 1, extra: true}, %{b: 2, extra: true}) == :ok
+               Process.sleep(50)
+             end) =~ "ok"
     end
   end
 end
